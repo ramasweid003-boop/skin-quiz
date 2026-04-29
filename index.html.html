@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skin Type Quiz 🌸</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #fff5f8 0%, #fff9f4 50%, #f5f8ff 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Sans', sans-serif;
+    padding: 24px; overflow-x: hidden;
+  }
+  .petal { position: fixed; pointer-events: none; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; opacity: 0.3; animation: float 6s ease-in-out infinite alternate; z-index: 0; }
+  @keyframes float { 0% { transform: translateY(0px) rotate(0deg); } 100% { transform: translateY(-20px) rotate(20deg); } }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .card { background: rgba(255,255,255,0.85); backdrop-filter: blur(16px); border-radius: 24px; padding: 36px 40px; box-shadow: 0 8px 40px rgba(180,120,150,0.13); border: 1px solid rgba(249,196,209,0.4); max-width: 520px; width: 100%; animation: fadeIn 0.4s ease; position: relative; z-index: 1; }
+  h1 { font-family: 'Playfair Display', serif; font-size: 28px; color: #2d1b2e; margin-bottom: 10px; }
+  h2 { font-family: 'Playfair Display', serif; font-size: 20px; color: #2d1b2e; margin-bottom: 20px; line-height: 1.4; }
+  p { color: #8a6070; font-size: 15px; line-height: 1.6; }
+  .progress-bar { height: 6px; background: #f0e6ec; border-radius: 99px; overflow: hidden; margin-bottom: 6px; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, #f9a8c9, #f4c5a0); border-radius: 99px; transition: width 0.5s cubic-bezier(.4,0,.2,1); }
+  .progress-label { display: flex; justify-content: space-between; font-size: 12px; color: #b08ea0; margin-bottom: 8px; letter-spacing: 1px; }
+  .options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+  .option { padding: 13px 18px; text-align: left; border: 2px solid #f0e6ec; border-radius: 12px; background: white; color: #4a3040; font-size: 15px; cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif; }
+  .option:hover { border-color: #f9a8c9; background: #fffafc; }
+  .option.selected { border-color: #f9a8c9; background: linear-gradient(135deg, #fde8f0, #fdf0e8); color: #b05070; font-weight: 600; box-shadow: 0 2px 12px rgba(249,168,201,0.25); }
+  .btn { padding: 13px 0; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; width: 100%; }
+  .btn-primary { background: linear-gradient(135deg, #f9a8c9, #f4b89a); color: white; box-shadow: 0 4px 20px rgba(249,168,201,0.35); }
+  .btn-primary:hover { transform: scale(1.02); }
+  .btn-primary:disabled { background: #f0e6ec; color: #c0a0b0; cursor: not-allowed; transform: none; box-shadow: none; }
+  .btn-secondary { background: white; border: 2px solid #f0e6ec; color: #8a6070; }
+  .btn-row { display: flex; gap: 10px; }
+  .btn-row .btn-secondary { flex: 1; }
+  .btn-row .btn-primary { flex: 2; }
+  .tag { background: linear-gradient(135deg, #fde8f0, #fdf0e8); color: #b05070; border-radius: 99px; padding: 5px 14px; font-size: 13px; display: inline-block; margin: 4px; }
+  .tags { text-align: center; margin-bottom: 24px; }
+  .result-section { margin-bottom: 18px; }
+  .result-section h3 { font-family: 'Playfair Display', serif; color: #a03060; font-size: 16px; margin-bottom: 8px; }
+  .result-section ul { list-style: none; padding: 0; }
+  .result-section ul li { padding: 7px 0 7px 22px; position: relative; color: #4a3040; font-size: 14px; border-bottom: 1px solid #fde8f0; }
+  .result-section ul li:before { content: "🌸"; position: absolute; left: 0; font-size: 11px; top: 9px; }
+  .result-box { background: linear-gradient(135deg, #fffafc, #fff8f4); border-radius: 16px; padding: 20px 22px; margin-bottom: 20px; border: 1px solid rgba(249,168,201,0.25); max-height: 420px; overflow-y: auto; }
+  .hudtyp-badge { display: inline-block; background: linear-gradient(135deg, #f9a8c9, #f4b89a); color: white; border-radius: 99px; padding: 6px 20px; font-weight: 700; font-size: 15px; margin-top: 4px; }
+  .spinner { width: 52px; height: 52px; border: 4px solid #f0e6ec; border-top: 4px solid #f9a8c9; border-radius: 50%; margin: 0 auto 20px; animation: spin 0.9s linear infinite; }
+  .center { text-align: center; }
+  .emoji-big { font-size: 44px; margin-bottom: 10px; display: block; }
+  .uppmuntran { background: #fde8f0; border-radius: 12px; padding: 14px 16px; font-size: 14px; color: #a03060; font-style: italic; margin-top: 4px; line-height: 1.6; }
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+
+<script>
+const colors = ["#f9c5d1","#fde8c8","#d4ecd4","#c8dff5","#e8d5f5"];
+for(let i=0;i<16;i++){
+  const d=document.createElement('div');
+  d.className='petal';
+  d.style.cssText=`width:${12+(i%5)*8}px;height:${18+(i%4)*10}px;background:${colors[i%5]};left:${(i*37)%100}%;top:${(i*53)%100}%;animation-delay:${i*0.4}s;animation-duration:${6+(i%4)}s;`;
+  document.body.appendChild(d);
+}
+</script>
+
+<!-- INTRO -->
+<div class="card" id="intro">
+  <div class="center" style="margin-bottom:24px">
+    <span class="emoji-big">🌸</span>
+    <h1>Find Your Skin Type</h1>
+    <p style="margin-top:8px">Answer 5 quick questions and get your personal skincare routine — completely free, right in your browser.</p>
+  </div>
+  <div class="tags">
+    <span class="tag">5 questions</span>
+    <span class="tag">Personal analysis</span>
+    <span class="tag">Free routine</span>
+  </div>
+  <button class="btn btn-primary" onclick="goTo('q1')">Start the quiz →</button>
+</div>
+
+<!-- QUESTION 1 -->
+<div class="card hidden" id="q1">
+  <div class="progress-label"><span>STEP 1 OF 5</span><span>20%</span></div>
+  <div class="progress-bar"><div class="progress-fill" style="width:20%"></div></div>
+  <h2>How does your skin feel after washing your face?</h2>
+  <div class="options" id="opts1">
+    <button class="option" onclick="pick(this,'q1')">Tight and dry</button>
+    <button class="option" onclick="pick(this,'q1')">Comfortable and soft</button>
+    <button class="option" onclick="pick(this,'q1')">Shiny and oily quickly</button>
+  </div>
+  <button class="btn btn-primary" id="next1" disabled onclick="goTo('q2')">Next →</button>
+</div>
+
+<!-- QUESTION 2 -->
+<div class="card hidden" id="q2">
+  <div class="progress-label"><span>STEP 2 OF 5</span><span>40%</span></div>
+  <div class="progress-bar"><div class="progress-fill" style="width:40%"></div></div>
+  <h2>How oily does your skin get throughout the day?</h2>
+  <div class="options" id="opts2">
+    <button class="option" onclick="pick(this,'q2')">Rarely — my skin feels dry</button>
+    <button class="option" onclick="pick(this,'q2')">A little oily in the T-zone</button>
+    <button class="option" onclick="pick(this,'q2')">Often oily all over</button>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="goTo('q1')">← Back</button>
+    <button class="btn btn-primary" id="next2" disabled onclick="goTo('q3')">Next →</button>
+  </div>
+</div>
+
+<!-- QUESTION 3 -->
+<div class="card hidden" id="q3">
+  <div class="progress-label"><span>STEP 3 OF 5</span><span>60%</span></div>
+  <div class="progress-bar"><div class="progress-fill" style="width:60%"></div></div>
+  <h2>How often do you get pimples or breakouts?</h2>
+  <div class="options" id="opts3">
+    <button class="option" onclick="pick(this,'q3')">Rarely or never</button>
+    <button class="option" onclick="pick(this,'q3')">Sometimes</button>
+    <button class="option" onclick="pick(this,'q3')">Often</button>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="goTo('q2')">← Back</button>
+    <button class="btn btn-primary" id="next3" disabled onclick="goTo('q4')">Next →</button>
+  </div>
+</div>
+
+<!-- QUESTION 4 -->
+<div class="card hidden" id="q4">
+  <div class="progress-label"><span>STEP 4 OF 5</span><span>80%</span></div>
+  <div class="progress-bar"><div class="progress-fill" style="width:80%"></div></div>
+  <h2>Does your skin react easily to new products?</h2>
+  <div class="options" id="opts4">
+    <button class="option" onclick="pick(this,'q4')">Yes, it often gets red or itchy</button>
+    <button class="option" onclick="pick(this,'q4')">Sometimes</button>
+    <button class="option" onclick="pick(this,'q4')">Rarely, my skin handles most things</button>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="goTo('q3')">← Back</button>
+    <button class="btn btn-primary" id="next4" disabled onclick="goTo('q5')">Next →</button>
+  </div>
+</div>
+
+<!-- QUESTION 5 -->
+<div class="card hidden" id="q5">
+  <div class="progress-label"><span>STEP 5 OF 5</span><span>100%</span></div>
+  <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
+  <h2>What is your main skincare goal?</h2>
+  <div class="options" id="opts5">
+    <button class="option" onclick="pick(this,'q5')">More hydration and glow</button>
+    <button class="option" onclick="pick(this,'q5')">Less oiliness</button>
+    <button class="option" onclick="pick(this,'q5')">Calmer, less red skin</button>
+    <button class="option" onclick="pick(this,'q5')">Fewer pimples and breakouts</button>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="goTo('q4')">← Back</button>
+    <button class="btn btn-primary" id="next5" disabled onclick="showResult()">✨ Show my results</button>
+  </div>
+</div>
+
+<!-- LOADING -->
+<div class="card hidden center" id="loading">
+  <div class="spinner"></div>
+  <h2>Analyzing your skin...</h2>
+  <p>Building your personal skincare profile</p>
+</div>
+
+<!-- RESULT -->
+<div class="card hidden" id="result" style="max-width:560px">
+  <div class="center" style="margin-bottom:20px">
+    <span class="emoji-big">🌟</span>
+    <h2 style="margin-bottom:0">Your Skin Analysis</h2>
+  </div>
+  <div class="result-box" id="resultBox"></div>
+  <button class="btn btn-primary" onclick="restart()">🔄 Retake the quiz</button>
+</div>
+
+<script>
+const answers = {};
+
+function goTo(id) {
+  document.querySelectorAll('.card').forEach(c => c.classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+  window.scrollTo(0,0);
+}
+
+function pick(btn, qId) {
+  const num = qId.replace('q','');
+  document.querySelectorAll('#opts' + num + ' .option').forEach(o => o.classList.remove('selected'));
+  btn.classList.add('selected');
+  answers[qId] = btn.textContent.trim();
+  const nextBtn = document.getElementById('next' + num);
+  if(nextBtn) nextBtn.disabled = false;
+}
+
+function showResult() {
+  goTo('loading');
+  setTimeout(() => {
+    document.getElementById('resultBox').innerHTML = buildResult();
+    goTo('result');
+  }, 1200);
+}
+
+function buildResult() {
+  let dry=0, oily=0, sensitive=0, acne=0;
+
+  if(answers.q1?.includes('Tight')) dry+=2;
+  else if(answers.q1?.includes('oily')) oily+=2;
+
+  if(answers.q2?.includes('dry')) dry+=2;
+  else if(answers.q2?.includes('T-zone')) { oily+=1; dry+=1; }
+  else if(answers.q2?.includes('all over')) oily+=2;
+
+  if(answers.q3?.includes('Sometimes')) acne+=1;
+  else if(answers.q3?.includes('Often')) { acne+=2; oily+=1; }
+
+  if(answers.q4?.includes('red or itchy')) sensitive+=2;
+  else if(answers.q4?.includes('Sometimes')) sensitive+=1;
+
+  if(answers.q5?.includes('hydration')) dry+=1;
+  else if(answers.q5?.includes('oiliness')) oily+=1;
+  else if(answers.q5?.includes('Calmer')) sensitive+=1;
+  else if(answers.q5?.includes('pimples')) acne+=1;
+
+  let skinType = oily > dry+1 ? 'Oily Skin' : dry > oily+1 ? 'Dry Skin' : 'Combination Skin';
+  if(sensitive >= 2) skinType += ' + Sensitive';
+
+  const morning = ['Gentle, fragrance-free cleanser'];
+  if(skinType.includes('Dry')) { morning.push('Hydrating toner'); morning.push('Rich moisturizer with hyaluronic acid'); }
+  else if(skinType.includes('Oily')) { morning.push('Niacinamide toner'); morning.push('Lightweight oil-free moisturizer'); }
+  else { morning.push('Balancing toner'); morning.push('Light moisturizer'); }
+  morning.push('SPF 30+ sunscreen (every single day!)');
+
+  const evening = ['Double cleanse — makeup remover + gentle cleanser'];
+  if(acne >= 2) evening.push('Salicylic acid 1-2% for breakouts');
+  if(skinType.includes('Dry')) { evening.push('Hyaluronic acid serum'); evening.push('Rich night cream'); }
+  else if(skinType.includes('Oily')) { evening.push('Niacinamide serum for pores'); evening.push('Light night moisturizer'); }
+  else { evening.push('Hydrating serum'); evening.push('Night cream for combination skin'); }
+
+  const avoid = [];
+  if(skinType.includes('Sensitive')) { avoid.push('Products with fragrance or alcohol'); avoid.push('Strong acids when starting out'); }
+  if(skinType.includes('Oily') || acne>=1) { avoid.push('Heavy oils and comedogenic ingredients'); avoid.push('Over-exfoliating or harsh scrubbing'); }
+  if(skinType.includes('Dry')) { avoid.push('Alcohol-based toners'); avoid.push('Hot water when washing your face'); }
+  if(!avoid.length) avoid.push('Products with harsh chemicals or heavy fragrances');
+
+  const tips = [
+    "You're on the right track! Consistency is the key to healthy skin. 💕",
+    "Great skin is built with patience and care — you've got this! 🌸",
+    "A simple routine you follow every day beats ten products you use once. Keep it up! ✨",
+    "Your skin is unique and beautiful — treat it with love and it will glow. 🌷"
+  ][Math.floor(Math.random()*4)];
+
+  const li = arr => arr.map(s=>`<li>${s}</li>`).join('');
+  return `
+    <div class="result-section">
+      <h3>Skin Type</h3>
+      <div><span class="hudtyp-badge">${skinType}</span></div>
+    </div>
+    <div class="result-section">
+      <h3>☀️ Morning Routine</h3>
+      <ul>${li(morning)}</ul>
+    </div>
+    <div class="result-section">
+      <h3>🌙 Evening Routine</h3>
+      <ul>${li(evening)}</ul>
+    </div>
+    <div class="result-section">
+      <h3>🚫 Avoid</h3>
+      <ul>${li(avoid)}</ul>
+    </div>
+    <div class="uppmuntran">${tips}</div>
+  `;
+}
+
+function restart() {
+  Object.keys(answers).forEach(k => delete answers[k]);
+  document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+  document.querySelectorAll('[id^=next]').forEach(b => b.disabled = true);
+  goTo('intro');
+}
+</script>
+</body>
+</html>
